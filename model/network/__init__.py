@@ -1,2 +1,2 @@
 from .triplet import TripletLoss
-from .gaitset import SetNet
+from .gaitset import SetNet, SetNet_potion

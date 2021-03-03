@@ -6,7 +6,7 @@ import numpy as np
 from .data_set import DataSet
 
 
-def load_data(dataset_path, resolution, dataset, pid_num, pid_shuffle, cache=True):
+def load_data(dataset_path, resolution, dataset, pid_num, pid_shuffle, normalize, cache=True):
     seq_dir = list()
     view = list()
     seq_type = list()
@@ -39,7 +39,7 @@ def load_data(dataset_path, resolution, dataset, pid_num, pid_shuffle, cache=Tru
         os.makedirs('partition', exist_ok=True)
         np.save(pid_fname, pid_list)
 
-    pid_list = np.load(pid_fname)
+    pid_list = np.load(pid_fname, allow_pickle=True)
     train_list = pid_list[0]
     test_list = pid_list[1]
     train_source = DataSet(
@@ -48,13 +48,13 @@ def load_data(dataset_path, resolution, dataset, pid_num, pid_shuffle, cache=Tru
         [seq_type[i] for i, l in enumerate(label) if l in train_list],
         [view[i] for i, l in enumerate(label)
          if l in train_list],
-        cache, resolution)
+        cache, resolution, normalize)
     test_source = DataSet(
         [seq_dir[i] for i, l in enumerate(label) if l in test_list],
         [label[i] for i, l in enumerate(label) if l in test_list],
         [seq_type[i] for i, l in enumerate(label) if l in test_list],
         [view[i] for i, l in enumerate(label)
          if l in test_list],
-        cache, resolution)
+        cache, resolution, normalize)
 
     return train_source, test_source

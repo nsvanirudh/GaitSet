@@ -73,14 +73,14 @@ class DataSet(tordata.Dataset):
     def __getitem__(self, index):
         # pose sequence sampling
         if not self.cache:
-            # data = [self.__loader__(_path) for _path in self.seq_dir[index]]
-            data = [self.__loader_potion__(_path) for _path in self.seq_dir[index]]
+            data = [self.__loader__(_path) for _path in self.seq_dir[index]]
+            # data = [self.__loader_potion__(_path) for _path in self.seq_dir[index]]
             # data = [self.__loader_npy__(_path) for _path in self.seq_dir[index]]
             frame_set = [set(feature.coords['frame'].values.tolist()) for feature in data]
             frame_set = list(set.intersection(*frame_set))
         elif self.data[index] is None:
-            # data = [self.__loader__(_path) for _path in self.seq_dir[index]]
-            data = [self.__loader_potion__(_path) for _path in self.seq_dir[index]]
+            data = [self.__loader__(_path) for _path in self.seq_dir[index]]
+            # data = [self.__loader_potion__(_path) for _path in self.seq_dir[index]]
             # data = [self.__loader_npy__(_path) for _path in self.seq_dir[index]]
             frame_set = [set(feature.coords['frame'].values.tolist()) for feature in data]
             frame_set = list(set.intersection(*frame_set))

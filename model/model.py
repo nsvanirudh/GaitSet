@@ -20,6 +20,7 @@ from .utils import TripletSampler
 class Model:
     def __init__(self,
                  hidden_dim,
+                 num_channels,
                  lr,
                  hard_or_full_trip,
                  margin,
@@ -41,6 +42,7 @@ class Model:
         self.test_source = test_source
 
         self.hidden_dim = hidden_dim
+        self.num_channels = num_channels
         self.lr = lr
         self.hard_or_full_trip = hard_or_full_trip
         self.margin = margin
@@ -55,7 +57,7 @@ class Model:
 
         self.img_size = img_size
 
-        self.encoder = SetNet_potion(self.hidden_dim).float()
+        self.encoder = SetNet_potion(self.hidden_dim, self.num_channels).float()
         self.encoder = nn.DataParallel(self.encoder)
         self.triplet_loss = TripletLoss(self.P * self.M, self.hard_or_full_trip, self.margin).float()
         self.triplet_loss = nn.DataParallel(self.triplet_loss)
@@ -123,13 +125,25 @@ class Model:
                                            ], 0) for _ in range(gpu_num)]
                     for j in range(feature_num)]
             # print(seqs[0][0].shape)
-            seqs = [np.asarray([
-                                   np.pad(seqs[j][_],
-                                          ((0, max_sum_frame - seqs[j][_].shape[0]), (0, 0), (0, 0), (0, 0)), #Made (0,0) -> (0, 0, 0)
-                                          'constant',
-                                          constant_values=0)
-                                   for _ in range(gpu_num)])
-                    for j in range(feature_num)]
+            if self.num_channels == 1:
+                seqs = [np.asarray([
+                                       np.pad(seqs[j][_],
+                                                ((0, max_sum_frame - seqs[j][_].shape[0]), (0, 0), (0, 0)),
+
+                                              # ((0, max_sum_frame - seqs[j][_].shape[0]), (0, 0), (0, 0), (0, 0)), #Made (0,0) -> (0, 0, 0)
+                                              'constant',
+                                              constant_values=0)
+                                       for _ in range(gpu_num)])
+                        for j in range(feature_num)]
+            elif self.num_channels == 3:
+                seqs = [np.asarray([
+                                       np.pad(seqs[j][_],
+                                                # ((0, max_sum_frame - seqs[j][_].shape[0]), (0, 0), (0, 0)),
+                                                ((0, max_sum_frame - seqs[j][_].shape[0]), (0, 0), (0, 0), (0, 0)), 
+                                              'constant',
+                                              constant_values=0)
+                                       for _ in range(gpu_num)])
+                        for j in range(feature_num)]
             batch[4] = np.asarray(batch_frames)
 
         batch[0] = seqs

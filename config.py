@@ -2,7 +2,8 @@ conf = {
     "WORK_PATH": "./work",
     "CUDA_VISIBLE_DEVICES": "0",
     "data": {
-        'dataset_path': "/scratch0/snanduri/silh_T_3",
+        # 'dataset_path': "/scratch0/snanduri/GaitProcessed",
+        'dataset_path': "/scratch0/snanduri/silh_T_gei_3/silh_T_gei_3",
         'resolution': '64',
         'dataset': 'CASIA-B',
         # In CASIA-B, data of subject #5 is incomplete.
@@ -15,14 +16,16 @@ conf = {
     },
     "model": {
         'hidden_dim': 256, #256
-        'lr': 5e-5,
+        'num_channels': 1,
+        'lr': 1e-4,
         'hard_or_full_trip': 'full',
         'batch_size': (8, 16),
-        'restore_iter': 160000,
-        'total_iter': 240000,
+        'restore_iter': 0,
+        'total_iter': 80000,
         'margin': 0.2,
         'num_workers': 3,
         'frame_num': 30,
-        'model_name': 'GaitSet_SilhPotion_1period_onlyArea',
+        'model_name': 'GaitSet_geis',
+        # 'model_name': 'GaitSet_SilhPotion_1period_onlyArea',
     },
 }

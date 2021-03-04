@@ -6,12 +6,13 @@ from .basic_blocks import SetBlock, BasicConv2d
 
 
 class SetNet_potion(nn.Module):
-    def __init__(self, hidden_dim):
+    def __init__(self, hidden_dim, in_channels):
         super(SetNet_potion, self).__init__()
         self.hidden_dim = hidden_dim
+        self.in_channels = in_channels
         self.batch_frame = None
 
-        _set_in_channels = 3
+        _set_in_channels = self.in_channels
         _set_channels = [32, 64, 128]
         self.set_layer1 = SetBlock(BasicConv2d(_set_in_channels, _set_channels[0], 5, padding=2))
         self.set_layer2 = SetBlock(BasicConv2d(_set_channels[0], _set_channels[0], 3, padding=1), True)
@@ -84,7 +85,10 @@ class SetNet_potion(nn.Module):
                 silho = silho[:, :frame_sum, :, :]
             self.batch_frame = [0] + np.cumsum(batch_frame).tolist()
         n = silho.size(0)
-        x = silho
+        if self.in_channels == 1:
+            x = silho.unsqueeze(2)
+        else:
+            x = silho
         # pdb.set_trace()
         # x = x.view(n, 30, 80, -1) #set the first dim size to batch_size
         # x = x.view(n, silho.size(1), 19, 64, 86) #set the first dim size to batch_size

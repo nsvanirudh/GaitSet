@@ -6,7 +6,7 @@ import numpy as np
 from .data_set import DataSet
 
 
-def load_data(dataset_path, resolution, dataset, pid_num, pid_shuffle, normalize, cache=True):
+def load_data(dataset_path, resolution, dataset, pid_num, pid_shuffle, normalize, num_channels, cache=True):
     seq_dir = list()
     view = list()
     seq_type = list()
@@ -48,13 +48,13 @@ def load_data(dataset_path, resolution, dataset, pid_num, pid_shuffle, normalize
         [seq_type[i] for i, l in enumerate(label) if l in train_list],
         [view[i] for i, l in enumerate(label)
          if l in train_list],
-        cache, resolution, normalize)
+        cache, resolution, normalize, num_channels)
     test_source = DataSet(
         [seq_dir[i] for i, l in enumerate(label) if l in test_list],
         [label[i] for i, l in enumerate(label) if l in test_list],
         [seq_type[i] for i, l in enumerate(label) if l in test_list],
         [view[i] for i, l in enumerate(label)
          if l in test_list],
-        cache, resolution, normalize)
+        cache, resolution, normalize, num_channels)
 
     return train_source, test_source

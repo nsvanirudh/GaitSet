@@ -12,7 +12,7 @@ from .model import Model
 
 def initialize_data(config, train=False, test=False):
     print("Initializing data source...")
-    train_source, test_source = load_data(**config['data'], cache=(train or test))
+    train_source, test_source = load_data(**config['data'], config['model']['num_channels'], cache=(train or test))
     if train:
         print("Loading training data...")
         train_source.load_all_data()
@@ -38,6 +38,7 @@ def initialize_model(config, train_source, test_source):
         data_config['pid_num'],
         data_config['pid_shuffle'],
         model_config['hidden_dim'],
+        model_config['num_channels'],
         model_config['margin'],
         batch_size,
         model_config['hard_or_full_trip'],
